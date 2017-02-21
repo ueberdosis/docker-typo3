@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  nginx:
+    image: nginx:1.11-alpine
+    depends_on:
+      - php
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "data:/var/www/html"
+      - "./etc/nginx:/etc/nginx/conf.d"
+  php:
+    build:
+      context: .
+    depends_on:
+      - mysql
+    volumes:
+      - "data:/var/www/html"
+  mysql:
+    image: mariadb:10.1
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=db
+      - MYSQL_USER=db
+      - MYSQL_PASSWORD=db
+    command: "--character-set-server=utf8"
+volumes:
+  data:
