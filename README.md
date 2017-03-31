@@ -1,6 +1,6 @@
 # TYPO3 Docker Image
 
-This project is experimental!
+This project is experimental.
 
 Dockerfile with TYPO3 8.6 based on a tiny Alpine Linux.
 
