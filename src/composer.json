@@ -1,0 +1,15 @@
+{
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://composer.typo3.org"
+		}
+	],
+	"require": {
+		"typo3/cms": "8.6.*"
+	},
+	"include-path": [
+		"vendor/pear/http_request2/",
+		"vendor/pear/net_url2/"
+	]
+}

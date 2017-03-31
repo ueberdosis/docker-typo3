@@ -1,9 +1,8 @@
 FROM php:7.1-fpm-alpine
 MAINTAINER Patrick Baber <patrick.baber@ueber.io>
 
-# URL: https://typo3.org/download/
-ENV TYPO3_VERSION "8.6.0"
-ENV TYPO3_SHA256_CHECKSUM "bb766d646e2507af2093a866c058d0e9a341f87505fa0722f73b263112ed2fe5"
+# URL: https://getcomposer.org/download/
+ENV COMPOSER_VERSION "1.4.1"
 
 # Install dependencies
 RUN apk add --update \
@@ -26,24 +25,17 @@ RUN apk add --update \
 # Configure PHP
 COPY /etc/php/conf.d/typo3.ini /usr/local/etc/php/conf.d/typo3.ini
 
+# Install Composer
+RUN wget https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar && \
+    mv composer.phar /usr/local/bin/composer && \
+    chmod +x /usr/local/bin/composer
+
+COPY composer.json /var/www/html/composer.json
+
 # Install TYPO3
-RUN mkdir -p /usr/src/typo3 && \
-    cd /usr/src/typo3 && \
-    wget https://get.typo3.org/${TYPO3_VERSION} -O typo3-${TYPO3_VERSION}.tar.gz && \
-    openssl sha256 typo3-${TYPO3_VERSION}.tar.gz | grep "${TYPO3_SHA256_CHECKSUM}" && \
-    tar -xzf typo3-${TYPO3_VERSION}.tar.gz && \
-    mv /usr/src/typo3/typo3_src-${TYPO3_VERSION} /var/www/html && \
-    cd /var/www/html && \
-    ln -s typo3_src-* typo3_src && \
-    ln -s typo3_src/index.php && \
-    ln -s typo3_src/typo3 && \
-    ln -s typo3_src/_.htaccess .htaccess && \
-    mkdir typo3temp && \
-    mkdir typo3conf && \
-    mkdir fileadmin && \
-    mkdir uploads && \
+RUN cd /var/www/html && \
+    composer install && \
     touch FIRST_INSTALL && \
-    chown -R www-data. . && \
-    rm -r /usr/src/typo3
+    chown -R www-data. .
 
 WORKDIR /var/www/html
