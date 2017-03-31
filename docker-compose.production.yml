@@ -12,8 +12,7 @@ services:
       - "data:/var/www/html"
       - "./etc/nginx:/etc/nginx/conf.d"
   php:
-    build:
-      context: .
+    image: ueberdosis/typo3:php
     depends_on:
       - mysql
     volumes:
